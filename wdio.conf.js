@@ -51,7 +51,14 @@ export const config = {
     // https://saucelabs.com/platform/platform-configurator
     //
     capabilities: [{
-        browserName: 'chrome'
+        browserName: 'chrome',
+        'goog:chromeOptions': {
+            args: [
+                // Hapus '--headless' untuk melihat browser saat test berjalan
+                '--no-sandbox',
+                '--disable-dev-shm-usage'
+            ]
+        }        
     }],
 
     //
