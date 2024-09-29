@@ -113,7 +113,7 @@ describe('Sign up Page', () => {
         // Add to cart
         const addToCartButton = await $('//*[@id="tbodyid"]/div[2]/div/a');
         await addToCartButton.click();
-        await browser.pause(3000);
+        await browser.pause(5000);
     });
     it('Test Case 6 - Click Navigation Menu Cart and ensure item is added to cart', async () => { 
         const cartButton = await $('//*[@id="cartur"]');
@@ -161,6 +161,32 @@ describe('Sign up Page', () => {
         await okButton.click();
         await browser.pause(5000);
     });
+    it('Test Case 9 - Click About Us Navigation Menu chekc Detail and close dialog', async () => { 
+        const aboutUsButton = await $('//*[@id="navbarExample"]/ul/li[3]/a');
+        const closeButton = await $('//*[@id="videoModal"]/div/div/div[3]/button');
+        await aboutUsButton.click();
+        await browser.pause(5000);
+        await closeButton.click();
+        await browser.pause(5000);
+    });
+    it('should display Sony Vaio i5 after selecting Laptops category', async () => {
+        // Open the webpage
+        await browser.url('/');
+        
+        // Click the Laptops category link
+        const laptopsCategory = await $('a[onclick="byCat(\'notebook\')"]');
+        await laptopsCategory.click();
+        
+        // Wait for the products to load
+        await browser.pause(2000); // Adjust as needed based on page loading time
+        
+        // Check that the catalog for "Sony Vaio i5" is visible
+        const sonyVaioI5 = await $('a[href="prod.html?idp_=8"]');
+        
+        // Expect that the product is displayed
+        await expect(sonyVaioI5).toBeDisplayed();
+        await browser.pause(3000);
+    });  
 });
 
   
