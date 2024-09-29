@@ -44,31 +44,69 @@ describe('Sign up Page', () => {
         expect(actualLinks).toEqual(expectedLinks);
     });
 
-    it('Test Case 3 - Sign up with valid credentials and capture dialog', async () => {
-        await browser.url('/');
+        // Test case untuk Sign Up
+        it('Test Case 3 - should sign up with valid credentials', async () => {
+            // Navigasi ke halaman utama
+            await browser.url('https://www.demoblaze.com/');
+            
+            // Tunggu hingga elemen "Sign up" terlihat
+            const signUpBtn = await $('#signin2');
+            await signUpBtn.waitForDisplayed({ timeout: 5000 });
+            
+            // Scroll ke elemen "Sign up" dan klik
+            await signUpBtn.scrollIntoView();
+            await signUpBtn.waitForClickable({ timeout: 5000 });
+            await signUpBtn.click();
     
-        const link = await $('#signin2');
-        await link.click();
+            // Tunggu modal sign-up muncul
+            const signUpModal = await $('#signInModal');
+            await signUpModal.waitForDisplayed({ timeout: 5000 });
     
-        const emailInput = await $('#sign-username');
-        const passwordInput = await $('#sign-password');
+            // Isi formulir sign-up
+            const usernameInput = await $('#sign-username');
+            const passwordInput = await $('#sign-password');
+            await usernameInput.setValue('myUsername');
+            await passwordInput.setValue('myPassword');
+    
+            // Klik tombol "Sign up" di modal
+            const signUpModalBtn = await $('button[onclick="register()"]');
+            await signUpModalBtn.waitForClickable({ timeout: 5000 });
+            await signUpModalBtn.click();
+    
+            // Tunggu sampai modal sign-up tertutup
+            await signUpModal.waitForDisplayed({ reverse: true, timeout: 5000 });
+    
+            // Verifikasi bahwa proses sign-up berhasil
+            const alertText = await browser.getAlertText();
+            expect(alertText).toContain('Sign up successful'); // Contoh pesan
+            await browser.acceptAlert(); // Tutup alert jika muncul
+        });
 
-        // Menghasilkan username acak
-        const randomUsername = generateRandomUsername();
-        await emailInput.setValue(randomUsername); // Menggunakan username acak
-        await passwordInput.setValue('12345678');
+    // it('Test Case 3 - Sign up with valid credentials and capture dialog', async () => {
+    //     await browser.url('/');
     
-        const submitButton = await $('//*[@id="signInModal"]/div/div/div[3]/button[2]');
-        await submitButton.click();
+    //     const link = await $('#signin2');
+    //     await link.click();
     
-        // Capture the success message from the modal (if it's a modal dialog)
-        const modalMessage = await $('div.modal-body').getText();
-        console.log('Modal Text:', modalMessage);
+    //     const emailInput = await $('#sign-username');
+    //     const passwordInput = await $('#sign-password');
+
+    //     // Menghasilkan username acak
+    //     const randomUsername = generateRandomUsername();
+    //     await emailInput.setValue(randomUsername); // Menggunakan username acak
+    //     await passwordInput.setValue('12345678');
     
-        // Assert the text
-        expect(modalMessage).toContain('');  // Use 'toEqual' instead of 'toDeepEqual'
-        await browser.pause(3000);
-    });
+    //     const submitButton = await $('//*[@id="signInModal"]/div/div/div[3]/button[2]');
+    //     await submitButton.click();
+    
+    //     // Capture the success message from the modal (if it's a modal dialog)
+    //     const modalMessage = await $('div.modal-body').getText();
+    //     console.log('Modal Text:', modalMessage);
+    
+    //     // Assert the text
+    //     expect(modalMessage).toContain('');  // Use 'toEqual' instead of 'toDeepEqual'
+    //     await browser.pause(3000);
+    // });
 
     it('Test Case 4 - Log in with valid credentials and capture dialog', async () => { 
         await browser.url('/');
