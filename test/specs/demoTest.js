@@ -169,7 +169,7 @@ describe('Sign up Page', () => {
         await closeButton.click();
         await browser.pause(5000);
     });
-    it('should display Sony Vaio i5 after selecting Laptops category', async () => {
+    it('Test Case 10 - should display Sony Vaio i5 after selecting Laptops category', async () => {
         // Open the webpage
         await browser.url('/');
         
