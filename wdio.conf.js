@@ -110,7 +110,20 @@ export const config = {
     // Make sure you have the wdio adapter package for the specific framework installed
     // before running any tests.
     framework: 'mocha',
-    
+    // ========
+    // Reporters
+    // ========
+    reporters: [
+        'spec', 
+        ['html-nice', {
+            outputDir: './reports/html-reports',
+            filename: 'report.html',
+            reportTitle: 'Test Report',
+            showInBrowser: true,
+            useOnAfterCommandForScreenshot: true,
+            linkScreenshots: true
+        }]
+    ],
     //
     // The number of times to retry the entire specfile when it fails as a whole
     // specFileRetries: 1,

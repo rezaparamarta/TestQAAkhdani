@@ -36,12 +36,12 @@ describe('Sign up Page', () => {
         for (const link of navlinks) {
             const text = await link.getText();
             if (text.trim()) {  // Remove empty texts
-                actualLinks.push(text.trim().replace('(current)', '').trim());  // Remove '(current)' if exists
+                actualLinks.push(text.trim().replace('(current)', '').trim());
             }
         }
         
         console.log('Actual Links:', actualLinks);
-        expect(actualLinks).toEqual(expectedLinks);  // Use WebDriverIO syntax for assertion
+        expect(actualLinks).toEqual(expectedLinks);
     });
 
     it('Test Case 3 - Sign up with valid credentials and capture dialog', async () => {
@@ -85,10 +85,59 @@ describe('Sign up Page', () => {
         await browser.pause(3000);
     });
 
+    // it('Negative Test Case 4a - Handle HTML modal error after login without credentials', async () => {
+    //     // Buka homepage
+    //     await browser.url('/');
+    
+    //     // Klik link "Log In"
+    //     const loginLink = await $('#login2');
+    //     await loginLink.click();
+    
+    //     // Tunggu modal login muncul
+    //     const loginModal = await $('#logInModal');
+    //     await loginModal.waitForDisplayed({ timeout: 5000 });
+    
+    //     // Kosongkan field username dan password, lalu klik tombol "Log in"
+    //     const loginButton = await $('//button[text()="Log in"]');
+    //     await loginButton.click();
+    
+    //     // Cek apakah elemen dengan ID #errorl ada di DOM
+    //     const errorMessageElement = await $('#errorl');
+    //     const exists = await errorMessageElement.isExisting();
+    //     console.log('Element exists:', exists);  // Log apakah elemen ada
+    
+    //     // Definisikan pesan error yang diharapkan
+    //     const expectedErrorMessage = 'Please fill out Username and Password';
+    
+    //     if (exists) {
+    //         // Cek apakah elemen terlihat di halaman
+    //         const isDisplayed = await errorMessageElement.isDisplayed();
+    //         console.log('Element displayed:', isDisplayed);  // Log apakah elemen terlihat
+    
+    //         // Jika elemen terlihat, ambil teksnya
+    //         if (isDisplayed) {
+    //             const errorMessage = await errorMessageElement.getText();
+    //             console.log('Error Message:', errorMessage);  // Print pesan error
+    
+    //             // Verifikasi bahwa pesan error sesuai dengan yang diharapkan
+    //             await expect(errorMessage).toEqual(expectedErrorMessage);
+    //         } else {
+    //             console.log('Error message element is not displayed.');
+    //         }
+    //     } else {
+    //         console.log('Error message element does not exist.');
+    //     }
+
+    //     expect(exists).toBe(true);
+    
+    //     // Pause sebentar untuk memastikan UI stabil
+    //     await browser.pause(5000);
+    // }); 
+
     it('Test Case 5 - Click Samsung Galaxy S6, check specification, and Add to Cart', async () => {
         await browser.url('/index.html');
     
-        // Define all elements at once
+        // Define all elements in variable
         const product = {
             name: await $('//*[@id="tbodyid"]/div[1]/div/div/h4/a'),
             image: await $('//*[@id="imgp"]/div/img'),
@@ -180,13 +229,20 @@ describe('Sign up Page', () => {
         // Wait for the products to load
         await browser.pause(2000); // Adjust as needed based on page loading time
         
-        // Check that the catalog for "Sony Vaio i5" is visible
+        // Check catalog for "Sony Vaio i5" is visible
         const sonyVaioI5 = await $('a[href="prod.html?idp_=8"]');
         
         // Expect that the product is displayed
         await expect(sonyVaioI5).toBeDisplayed();
         await browser.pause(3000);
-    });  
+    });
+    it('Test Case 11 - Log out', async () => {
+        // Click the Log Out link
+        const logOutLink = await $('#logout2');
+        await logOutLink.click();
+
+        await browser.pause(3000);
+    });
 });
 
   
