@@ -127,27 +127,39 @@ describe('Sign up Page', () => {
         await browser.pause(3000);
     });
     it('Test Case 8 - Fill all input fields and click Purchase button', async () => {
-        const firstNameInput = await $('//*[@id="name"]');
-        const countryNameInput = await $('//*[@id="country"]');
-        const cityNameInput = await $('//*[@id="city"]');
-        const creditCardInput = await $('//*[@id="card"]');
-        const monthInput = await $('//*[@id="month"]');
-        const yearInput = await $('//*[@id="year"]');
-
+        const firstNameInput = await $('#name');
+        const countryNameInput = await $('#country');
+        const cityNameInput = await $('#city');
+        const creditCardInput = await $('#card');
+        const monthInput = await $('#month');
+        const yearInput = await $('#year');
+    
         await firstNameInput.setValue('Reza');
         await countryNameInput.setValue('Indonesia');
         await cityNameInput.setValue('Jakarta');
         await creditCardInput.setValue('4242424242424242');
         await monthInput.setValue('12');
         await yearInput.setValue('2024');
-
+    
         const purchaseButton = await $('//*[@id="orderModal"]/div/div/div[3]/button[2]');
         await purchaseButton.click();
         
-        const modalMessage = await $('/html/body/div[12]').getText();
+        // Wait for the dialog to appear
+        const sweetAlert = await $('.sweet-alert');
+        await sweetAlert.waitForDisplayed({ timeout: 5000 });
+    
+        // Capture the success message from the dialog
+        const modalMessage = await sweetAlert.$('h2').getText();
+        console.log('Modal Text:', modalMessage);
+        await browser.pause(5000);
+    
+        // Assert the success message
         expect(modalMessage).toBe('Thank you for your purchase!');
 
-        await browser.pause(3000);
+        // Click OK Button
+        const okButton = await $('.sweet-alert button.confirm');
+        await okButton.click();
+        await browser.pause(5000);
     });
 });
 
