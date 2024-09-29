@@ -67,7 +67,7 @@ describe('Sign up Page', () => {
     
         // Assert the text
         expect(modalMessage).toContain('');  // Use 'toEqual' instead of 'toDeepEqual'
-        await browser.pause(5000);
+        await browser.pause(3000);
     });
 
     it('Test Case 4 - Log in with valid credentials and capture dialog', async () => { 
@@ -82,6 +82,74 @@ describe('Sign up Page', () => {
     
         const loginbutton = await $('//*[@id="logInModal"]/div/div/div[3]/button[2]');
         await loginbutton.click();
-        await browser.pause(5000);
+        await browser.pause(3000);
+    });
+
+    it('Test Case 5 - Click Samsung Galaxy S6, check specification, and Add to Cart', async () => {
+        await browser.url('/index.html');
+    
+        // Define all elements at once
+        const product = {
+            name: await $('//*[@id="tbodyid"]/div[1]/div/div/h4/a'),
+            image: await $('//*[@id="imgp"]/div/img'),
+            title: await $('//*[@id="tbodyid"]/h2'),
+            price: await $('//*[@id="tbodyid"]/h3'),
+            specs: await $('//*[@id="more-information"]')
+        };
+    
+        // Click on the product name (Samsung Galaxy S6)
+        await product.name.click();
+    
+        // Assert product details
+        expect(await product.image.getAttribute('src')).toContain('galaxy_s6.jpg'); // Optimized expected value
+        expect(await product.title.getText()).toContain('Samsung galaxy s6');
+        expect(await product.price.getText()).toContain('$360 *includes tax');
+        
+        // Optimized spec assertions
+        const specsText = await product.specs.getText();
+        expect(specsText).toContain('The Samsung Galaxy S6 is powered by 1.5GHz octa-core Samsung Exynos 7420 processor and it comes with 3GB of RAM.');
+        expect(specsText).toContain('The phone packs 32GB of internal storage');
+
+        // Add to cart
+        const addToCartButton = await $('//*[@id="tbodyid"]/div[2]/div/a');
+        await addToCartButton.click();
+        await browser.pause(3000);
+    });
+    it('Test Case 6 - Click Navigation Menu Cart and ensure item is added to cart', async () => { 
+        const cartButton = await $('//*[@id="cartur"]');
+        await cartButton.click();
+
+        await browser.pause(8000);
+    });
+    it('Test Case 7 - Click Place Order to Purchase Item', async () => {
+        const placeOrderButton = await $('//*[@id="page-wrapper"]/div/div[2]/button');
+        await placeOrderButton.click();
+        await browser.pause(3000);
+    });
+    it('Test Case 8 - Fill all input fields and click Purchase button', async () => {
+        const firstNameInput = await $('//*[@id="name"]');
+        const countryNameInput = await $('//*[@id="country"]');
+        const cityNameInput = await $('//*[@id="city"]');
+        const creditCardInput = await $('//*[@id="card"]');
+        const monthInput = await $('//*[@id="month"]');
+        const yearInput = await $('//*[@id="year"]');
+
+        await firstNameInput.setValue('Reza');
+        await countryNameInput.setValue('Indonesia');
+        await cityNameInput.setValue('Jakarta');
+        await creditCardInput.setValue('4242424242424242');
+        await monthInput.setValue('12');
+        await yearInput.setValue('2024');
+
+        const purchaseButton = await $('//*[@id="orderModal"]/div/div/div[3]/button[2]');
+        await purchaseButton.click();
+        
+        const modalMessage = await $('/html/body/div[12]').getText();
+        expect(modalMessage).toBe('Thank you for your purchase!');
+
+        await browser.pause(3000);
     });
 });
+
+  
+ 
