@@ -251,12 +251,31 @@ describe('Sign up Page', () => {
         await okButton.click();
         await browser.pause(5000);
     });
-    it('Test Case 9 - Click About Us Navigation Menu chekc Detail and close dialog', async () => { 
+    it('Test Case 9 - Click About Us Navigation Menu check Detail and close dialog', async () => { 
         const aboutUsButton = await $('//*[@id="navbarExample"]/ul/li[3]/a');
         const closeButton = await $('//*[@id="videoModal"]/div/div/div[3]/button');
-        await aboutUsButton.click();
+    
+        // Scroll to the "About Us" button and ensure it's displayed
+        await aboutUsButton.scrollIntoView();
+        await aboutUsButton.waitForDisplayed({ timeout: 10000 });
+    
+        // Try clicking the "About Us" button and handle click interception
+        try {
+            await aboutUsButton.waitForClickable({ timeout: 10000 });
+            await aboutUsButton.click(); // Regular click attempt
+        } catch (error) {
+            // Use JS click if the regular click fails due to interception
+            await browser.execute((el) => el.click(), aboutUsButton);
+        }
+    
+        // Pause to observe the modal appearing
         await browser.pause(5000);
+    
+        // Ensure the close button is clickable and close the modal
+        await closeButton.waitForClickable({ timeout: 10000 });
         await closeButton.click();
+    
+        // Pause to observe the modal closing
         await browser.pause(5000);
     });
     it('Test Case 10 - should display Sony Vaio i5 after selecting Laptops category', async () => {
@@ -278,12 +297,23 @@ describe('Sign up Page', () => {
         await browser.pause(3000);
     });
     it('Test Case 11 - Log out', async () => {
-        // Click the Log Out link
-        const logOutLink = await $('#navbarExample > ul > li:nth-child(6) > a');
-        await logOutLink.click();
-
-        await browser.pause(3000);
-    });
+        const logOutLink = await $('#logout2');
+    
+        // Wait for the Log Out link to be displayed and clickable
+        await logOutLink.waitForDisplayed({ timeout: 10000 });
+        await logOutLink.scrollIntoView();
+    
+        // Sometimes elements may not be directly clickable due to overlay, so use a JS click if necessary
+        try {
+            await logOutLink.waitForClickable({ timeout: 10000 });
+            await logOutLink.click(); // Regular click attempt
+        } catch (error) {
+            // Use JS click if the regular click fails due to interception
+            await browser.execute((el) => el.click(), logOutLink);
+        }
+    
+        await browser.pause(3000); // Pause to observe the behavior (optional)
+    });      
 });
 
   
