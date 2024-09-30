@@ -58,7 +58,7 @@ describe('Sign up Page', () => {
         await emailInput.setValue(randomUsername); // Menggunakan username acak
         await passwordInput.setValue('12345678');
     
-        const submitButton = await $('//*[@id="signInModal"]/div/div/div[3]/button[2]');
+        const submitButton = await $('#signInModal > div > div > div.modal-footer > button.btn.btn-primary');
         await submitButton.click();
     
         // Capture the success message from the modal (if it's a modal dialog)
@@ -238,7 +238,7 @@ describe('Sign up Page', () => {
     });
     it('Test Case 11 - Log out', async () => {
         // Click the Log Out link
-        const logOutLink = await $('#logout2');
+        const logOutLink = await $('#navbarExample > ul > li:nth-child(6) > a');
         await logOutLink.click();
 
         await browser.pause(3000);
