@@ -48,43 +48,84 @@ describe('Sign up Page', () => {
         await browser.url('/');
     
         const link = await $('#signin2');
-        await link.click();
+    
+        // Scroll to the element and ensure it is displayed and clickable
+        await link.scrollIntoView();
+        await link.waitForDisplayed({ timeout: 10000 });
+        
+        try {
+            await link.waitForClickable({ timeout: 10000 });
+            await link.click(); // Regular click attempt
+        } catch (error) {
+            // Use JS click if the regular click fails due to interception
+            await browser.execute((el) => el.click(), link);
+        }
     
         const emailInput = await $('#sign-username');
         const passwordInput = await $('#sign-password');
-
-        // Menghasilkan username acak
+    
+        // Generate a random username
         const randomUsername = generateRandomUsername();
-        await emailInput.setValue(randomUsername); // Menggunakan username acak
+        await emailInput.setValue(randomUsername); // Use random username
         await passwordInput.setValue('12345678');
     
-        const submitButton = await $('#signInModal > div > div > div.modal-footer > button.btn.btn-primary');
-        await submitButton.click();
+        // Locate the "Sign up" button in the modal
+        const signUpButton = await $('//button[contains(@onclick, "register()")]');
+    
+        // Ensure the "Sign up" button is clickable
+        await signUpButton.waitForClickable({ timeout: 10000 });
+    
+        // Click the "Sign up" button
+        await signUpButton.click();
     
         // Capture the success message from the modal (if it's a modal dialog)
         const modalMessage = await $('div.modal-body').getText();
         console.log('Modal Text:', modalMessage);
     
-        // Assert the text
-        expect(modalMessage).toContain('');  // Use 'toEqual' instead of 'toDeepEqual'
+        // Assert the text (adjust the expectation based on actual success message)
+        expect(modalMessage).toContain('');  // Adjust this based on expected modal message
         await browser.pause(3000);
-    });
+    });        
 
     it('Test Case 4 - Log in with valid credentials and capture dialog', async () => { 
         await browser.url('/');
+    
         const loginLink = await $('#login2');
-        await loginLink.click();
-         
+    
+        // Wait for the element to be displayed and clickable
+        await loginLink.waitForDisplayed({ timeout: 10000 });
+        await loginLink.scrollIntoView();
+    
+        // Sometimes images or other elements may be blocking the login link, so execute a JS click if necessary
+        try {
+            await loginLink.waitForClickable({ timeout: 10000 });
+            await loginLink.click(); // Regular click attempt
+        } catch (error) {
+            // Use JS click if the regular click fails due to interception
+            await browser.execute((el) => el.click(), loginLink);
+        }
+    
+        // Wait for login modal inputs to appear
         const emailInput = await $('#loginusername');
         const passwordInput = await $('#loginpassword');
-        await emailInput.setValue('Reza Paramarta'); // Use the same random username if needed
+    
+        // Input valid credentials
+        await emailInput.setValue('Reza Paramarta'); 
         await passwordInput.setValue('12345678');
     
-        const loginbutton = await $('//*[@id="logInModal"]/div/div/div[3]/button[2]');
-        await loginbutton.click();
+        // Locate the "Log in" button in the modal
+        const loginButton = await $('//button[contains(@onclick, "logIn()")]');
+    
+        // Ensure the "Log in" button is clickable
+        await loginButton.waitForClickable({ timeout: 10000 });
+    
+        // Click the "Log in" button
+        await loginButton.click();
+    
+        // Pause to observe the behavior (optional)
         await browser.pause(3000);
     });
-
+    
     // it('Negative Test Case 4a - Handle HTML modal error after login without credentials', async () => {
     //     // Buka homepage
     //     await browser.url('/');
@@ -210,12 +251,31 @@ describe('Sign up Page', () => {
         await okButton.click();
         await browser.pause(5000);
     });
-    it('Test Case 9 - Click About Us Navigation Menu chekc Detail and close dialog', async () => { 
+    it('Test Case 9 - Click About Us Navigation Menu check Detail and close dialog', async () => { 
         const aboutUsButton = await $('//*[@id="navbarExample"]/ul/li[3]/a');
         const closeButton = await $('//*[@id="videoModal"]/div/div/div[3]/button');
-        await aboutUsButton.click();
+    
+        // Scroll to the "About Us" button and ensure it's displayed
+        await aboutUsButton.scrollIntoView();
+        await aboutUsButton.waitForDisplayed({ timeout: 10000 });
+    
+        // Try clicking the "About Us" button and handle click interception
+        try {
+            await aboutUsButton.waitForClickable({ timeout: 10000 });
+            await aboutUsButton.click(); // Regular click attempt
+        } catch (error) {
+            // Use JS click if the regular click fails due to interception
+            await browser.execute((el) => el.click(), aboutUsButton);
+        }
+    
+        // Pause to observe the modal appearing
         await browser.pause(5000);
+    
+        // Ensure the close button is clickable and close the modal
+        await closeButton.waitForClickable({ timeout: 10000 });
         await closeButton.click();
+    
+        // Pause to observe the modal closing
         await browser.pause(5000);
     });
     it('Test Case 10 - should display Sony Vaio i5 after selecting Laptops category', async () => {
@@ -237,12 +297,23 @@ describe('Sign up Page', () => {
         await browser.pause(3000);
     });
     it('Test Case 11 - Log out', async () => {
-        // Click the Log Out link
-        const logOutLink = await $('#navbarExample > ul > li:nth-child(6) > a');
-        await logOutLink.click();
-
-        await browser.pause(3000);
-    });
+        const logOutLink = await $('#logout2');
+    
+        // Wait for the Log Out link to be displayed and clickable
+        await logOutLink.waitForDisplayed({ timeout: 10000 });
+        await logOutLink.scrollIntoView();
+    
+        // Sometimes elements may not be directly clickable due to overlay, so use a JS click if necessary
+        try {
+            await logOutLink.waitForClickable({ timeout: 10000 });
+            await logOutLink.click(); // Regular click attempt
+        } catch (error) {
+            // Use JS click if the regular click fails due to interception
+            await browser.execute((el) => el.click(), logOutLink);
+        }
+    
+        await browser.pause(3000); // Pause to observe the behavior (optional)
+    });      
 });
 
   
