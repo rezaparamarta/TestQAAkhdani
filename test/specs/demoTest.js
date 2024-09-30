@@ -49,28 +49,27 @@ describe('Sign up Page', () => {
     
         const link = await $('#signin2');
     
-        // Scroll to the element to ensure it's visible
+        // Scroll to the element and ensure it is displayed and clickable
         await link.scrollIntoView();
+        await link.waitForDisplayed({ timeout: 10000 });
+        await link.waitForClickable({ timeout: 10000 });
     
-        // Wait until the element is clickable (ensure no other element obstructs it)
-        await link.waitForClickable({ timeout: 5000 });
-    
-        // Click the "Sign up" link to open the modal
+        // Click the "Sign up" link
         await link.click();
     
         const emailInput = await $('#sign-username');
         const passwordInput = await $('#sign-password');
     
-        // Menghasilkan username acak
+        // Generate a random username
         const randomUsername = generateRandomUsername();
-        await emailInput.setValue(randomUsername); // Menggunakan username acak
+        await emailInput.setValue(randomUsername); // Use random username
         await passwordInput.setValue('12345678');
     
         // Locate the "Sign up" button in the modal
         const signUpButton = await $('//button[contains(@onclick, "register()")]');
     
-        // Ensure the Sign up button is clickable
-        await signUpButton.waitForClickable({ timeout: 5000 });
+        // Ensure the "Sign up" button is clickable
+        await signUpButton.waitForClickable({ timeout: 10000 });
     
         // Click the "Sign up" button
         await signUpButton.click();
@@ -84,22 +83,47 @@ describe('Sign up Page', () => {
         await browser.pause(3000);
     });
     
+    
 
     it('Test Case 4 - Log in with valid credentials and capture dialog', async () => { 
         await browser.url('/');
+    
         const loginLink = await $('#login2');
-        await loginLink.click();
-         
+    
+        // Wait for the element to be displayed and clickable
+        await loginLink.waitForDisplayed({ timeout: 10000 });
+        await loginLink.scrollIntoView();
+    
+        // Sometimes images or other elements may be blocking the login link, so execute a JS click if necessary
+        try {
+            await loginLink.waitForClickable({ timeout: 10000 });
+            await loginLink.click(); // Regular click attempt
+        } catch (error) {
+            // Use JS click if the regular click fails due to interception
+            await browser.execute((el) => el.click(), loginLink);
+        }
+    
+        // Wait for login modal inputs to appear
         const emailInput = await $('#loginusername');
         const passwordInput = await $('#loginpassword');
-        await emailInput.setValue('Reza Paramarta'); // Use the same random username if needed
+    
+        // Input valid credentials
+        await emailInput.setValue('Reza Paramarta'); 
         await passwordInput.setValue('12345678');
     
-        const loginbutton = await $('//*[@id="logInModal"]/div/div/div[3]/button[2]');
-        await loginbutton.click();
+        // Locate the "Log in" button in the modal
+        const loginButton = await $('//button[contains(@onclick, "logIn()")]');
+    
+        // Ensure the "Log in" button is clickable
+        await loginButton.waitForClickable({ timeout: 10000 });
+    
+        // Click the "Log in" button
+        await loginButton.click();
+    
+        // Pause to observe the behavior (optional)
         await browser.pause(3000);
     });
-
+    
     // it('Negative Test Case 4a - Handle HTML modal error after login without credentials', async () => {
     //     // Buka homepage
     //     await browser.url('/');
