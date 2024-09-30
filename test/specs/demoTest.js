@@ -48,27 +48,42 @@ describe('Sign up Page', () => {
         await browser.url('/');
     
         const link = await $('#signin2');
+    
+        // Scroll to the element to ensure it's visible
+        await link.scrollIntoView();
+    
+        // Wait until the element is clickable (ensure no other element obstructs it)
+        await link.waitForClickable({ timeout: 5000 });
+    
+        // Click the "Sign up" link to open the modal
         await link.click();
     
         const emailInput = await $('#sign-username');
         const passwordInput = await $('#sign-password');
-
+    
         // Menghasilkan username acak
         const randomUsername = generateRandomUsername();
         await emailInput.setValue(randomUsername); // Menggunakan username acak
         await passwordInput.setValue('12345678');
     
-        const submitButton = await $('#signInModal > div > div > div.modal-footer > button.btn.btn-primary');
-        await submitButton.click();
+        // Locate the "Sign up" button in the modal
+        const signUpButton = await $('//button[contains(@onclick, "register()")]');
+    
+        // Ensure the Sign up button is clickable
+        await signUpButton.waitForClickable({ timeout: 5000 });
+    
+        // Click the "Sign up" button
+        await signUpButton.click();
     
         // Capture the success message from the modal (if it's a modal dialog)
         const modalMessage = await $('div.modal-body').getText();
         console.log('Modal Text:', modalMessage);
     
         // Assert the text
-        expect(modalMessage).toContain('');  // Use 'toEqual' instead of 'toDeepEqual'
+        expect(modalMessage).toContain('');  // Adjust this based on expected modal message
         await browser.pause(3000);
     });
+    
 
     it('Test Case 4 - Log in with valid credentials and capture dialog', async () => { 
         await browser.url('/');
